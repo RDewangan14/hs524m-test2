@@ -397,6 +397,26 @@
             font-size: 2rem;
             color: #854d0e;
         }
+
+        /* Year Pill Buttons */
+        .yr-pill {
+            padding: 6px 14px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            color: #334155;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .yr-pill:hover { background: #e2e8f0; }
+        .yr-pill.active {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #1d4ed8;
+            box-shadow: 0 2px 6px rgba(37,99,235,0.3);
+        }
     </style>
 </head>
 <body>
@@ -557,30 +577,71 @@
                     </p>
                 </div>
 
-                <!-- Story Step 3: Dynamic Temporal Output -->
+                <!-- Story Step 3: Dynamic Temporal Output — INTERACTIVE TIME SLIDER -->
                 <div class="story-step">
-                    <h3><i class="fa-solid fa-film"></i> 3. Dynamic Temporal Output: Annual Growth Animation (2018–2025)</h3>
+                    <h3><i class="fa-solid fa-film"></i> 3. Dynamic Temporal Output: Interactive Year Slider (2018–2025)</h3>
                     <p>
-                        As required by the assignment guidelines, the dynamic temporal animation below illustrates the year-by-year spatial outward growth of built-up surfaces alongside vegetation dynamics within the Raipur municipal boundary (following standard remote sensing classification: <strong>Red = Built up</strong>, <strong>Green = Vegetation</strong>, <strong>Blue = Water</strong>, <strong>Yellow = Others</strong>):
+                        Use the interactive slider or click the year pills below to scrub through each year's land cover classification. Press <strong>▶ Play</strong> to auto-animate. Classification follows standard remote sensing palette: <strong style="color:#ff0000;">Red = Built up</strong>, <strong style="color:#00aa00;">Green = Vegetation</strong>, <strong style="color:#0044ff;">Blue = Water</strong>, <strong style="color:#d4a017;">Yellow = Others</strong>.
                     </p>
-                    
+
+                    <!-- Interactive Time Slider Widget -->
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:1.25rem;margin:1.5rem 0;">
+                        <!-- Year Pills -->
+                        <div id="yearPills" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;justify-content:center;">
+                            <button class="yr-pill active" data-yr="2018" onclick="setYear(0)">2018</button>
+                            <button class="yr-pill" data-yr="2019" onclick="setYear(1)">2019</button>
+                            <button class="yr-pill" data-yr="2020" onclick="setYear(2)">2020</button>
+                            <button class="yr-pill" data-yr="2021" onclick="setYear(3)">2021</button>
+                            <button class="yr-pill" data-yr="2022" onclick="setYear(4)">2022</button>
+                            <button class="yr-pill" data-yr="2023" onclick="setYear(5)">2023</button>
+                            <button class="yr-pill" data-yr="2024" onclick="setYear(6)">2024</button>
+                            <button class="yr-pill" data-yr="2025" onclick="setYear(7)">2025</button>
+                        </div>
+                        <!-- Slider + Play Button -->
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                            <button id="playBtn" onclick="togglePlay()" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:0.95rem;font-weight:700;cursor:pointer;min-width:80px;transition:background 0.2s;">▶ Play</button>
+                            <input id="yearSlider" type="range" min="0" max="7" value="0" step="1" oninput="setYear(parseInt(this.value))" style="flex:1;height:6px;cursor:pointer;accent-color:#2563eb;">
+                            <span id="yearLabel" style="font-size:1.1rem;font-weight:800;color:#0f172a;min-width:42px;text-align:right;">2018</span>
+                        </div>
+                    </div>
+
                     <div class="visual-display">
-                        <img src="assets/images/raipur_dw_animation.gif" alt="Raipur Dynamic World Annual Animation 2018-2025">
+                        <img id="frameImg" src="assets/images/raipur_frame_2018.png" alt="Raipur LULC 2018" style="max-width:100%;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.12);border:1px solid #e2e8f0;">
                         <div class="visual-caption">
-                            <strong>Figure 1:</strong> Dynamic Annual Progression (2018–2025) of Land Use / Land Cover in Raipur (Dynamic World 10m). Top-right callouts indicate annual vegetation (green), built-up (red), and water (blue) percentages.
+                            <strong>Figure 1:</strong> Interactive annual land cover progression (2018–2025) of Raipur (Dynamic World 10 m). Use the slider or year pills above to explore each epoch.
+                            <br><a href="assets/images/raipur_dw_animation.gif" download style="color:#2563eb;font-weight:600;"><i class="fa-solid fa-download"></i> Download as animated GIF</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Story Step 4: Thematic Change Map -->
+                <!-- Story Step 4: Before / After Swipe Comparison -->
                 <div class="story-step">
-                    <h3><i class="fa-solid fa-map"></i> 4. Multi-Epoch Land Use Transformation (2018 vs. 2021 vs. 2025)</h3>
+                    <h3><i class="fa-solid fa-map"></i> 4. Before / After Swipe Comparison (2018 → 2025)</h3>
                     <p>
-                        Multi-epoch spatial analysis comparing the 2018 baseline footprint against intermediate (2021) and current (2025) extents, demonstrating dramatic built-up expansion (red) and vegetation transitions (green):
+                        Drag the vertical slider handle left or right to compare the <strong>2018 Baseline</strong> against the <strong>2025 Current</strong> land cover. The southeastern expansion corridor towards Atal Nagar is strikingly visible.
                     </p>
-                    
-                    <div class="visual-display">
-                        <img src="assets/images/raipur_change_map.png" alt="Spatial Transformation of Land Use / Land Cover in Raipur">
+
+                    <!-- Swipe Comparison Widget -->
+                    <div id="swipeContainer" style="position:relative;width:100%;max-width:800px;margin:1.5rem auto;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.15);border:1px solid #e2e8f0;user-select:none;-webkit-user-select:none;touch-action:none;">
+                        <!-- 2025 Image (background full width) -->
+                        <img id="swipeAfter" src="assets/images/raipur_map_2025.png" alt="Raipur 2025" style="display:block;width:100%;height:auto;">
+                        <!-- 2018 Image (clipped from left) -->
+                        <div id="swipeBefore" style="position:absolute;top:0;left:0;height:100%;width:50%;overflow:hidden;">
+                            <img src="assets/images/raipur_map_2018.png" alt="Raipur 2018" style="display:block;width:100%;height:auto;min-width:100%;position:absolute;top:0;left:0;">
+                        </div>
+                        <!-- Divider Line + Handle -->
+                        <div id="swipeLine" style="position:absolute;top:0;left:50%;width:3px;height:100%;background:#ffffff;cursor:ew-resize;z-index:10;box-shadow:0 0 6px rgba(0,0,0,0.4);">
+                            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;background:#ffffff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
+                                <span style="font-size:1rem;color:#334155;font-weight:900;">⇔</span>
+                            </div>
+                        </div>
+                        <!-- Labels -->
+                        <div style="position:absolute;top:10px;left:12px;background:rgba(255,255,255,0.92);padding:4px 10px;border-radius:6px;font-size:0.78rem;font-weight:700;color:#0f172a;box-shadow:0 1px 4px rgba(0,0,0,0.15);z-index:5;">2018 Baseline (69.4 km² Built)</div>
+                        <div style="position:absolute;top:10px;right:12px;background:rgba(255,255,255,0.92);padding:4px 10px;border-radius:6px;font-size:0.78rem;font-weight:700;color:#0f172a;box-shadow:0 1px 4px rgba(0,0,0,0.15);z-index:5;">2025 Current (84.8 km² Built)</div>
+                    </div>
+
+                    <div class="visual-display" style="margin-top:1.5rem;">
+                        <img src="assets/images/raipur_change_map.png" alt="Spatial Transformation of Land Use / Land Cover in Raipur" style="max-width:100%;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.12);border:1px solid #e2e8f0;">
                         <div class="visual-caption">
                             <strong>Figure 2:</strong> Multi-epoch LULC transformation in Raipur across key baseline epochs (2018, 2021, and 2025), showing rapid outward growth of built-up land along the southeastern Atal Nagar corridor and western NH-53 axis.
                         </div>
@@ -716,6 +777,91 @@
             Built with Folium, GeoPandas, Google Earth Engine & Dynamic World &bull; Hosted on GitHub Pages
         </p>
     </footer>
+
+    <!-- Dynamic Time Slider + Swipe Comparison JavaScript -->
+    <script>
+        // ===== TIME SLIDER PLAYER =====
+        const yrs = [2018,2019,2020,2021,2022,2023,2024,2025];
+        let curIdx = 0, playTimer = null;
+
+        function setYear(idx) {
+            curIdx = idx;
+            const yr = yrs[idx];
+            document.getElementById('frameImg').src = 'assets/images/raipur_frame_' + yr + '.png';
+            document.getElementById('yearSlider').value = idx;
+            document.getElementById('yearLabel').innerText = yr;
+            document.querySelectorAll('.yr-pill').forEach((b, i) => {
+                b.classList.toggle('active', i === idx);
+            });
+        }
+
+        function togglePlay() {
+            const btn = document.getElementById('playBtn');
+            if (playTimer) {
+                clearInterval(playTimer);
+                playTimer = null;
+                btn.innerText = '▶ Play';
+                btn.style.background = '#2563eb';
+            } else {
+                btn.innerText = '⏸ Pause';
+                btn.style.background = '#dc2626';
+                playTimer = setInterval(() => {
+                    curIdx = (curIdx + 1) % yrs.length;
+                    setYear(curIdx);
+                }, 1000);
+            }
+        }
+
+        // Preload frames
+        yrs.forEach(yr => { const i = new Image(); i.src = 'assets/images/raipur_frame_' + yr + '.png'; });
+
+        // Autoplay on page load
+        window.addEventListener('load', () => { togglePlay(); });
+
+        // ===== SWIPE COMPARISON =====
+        (function() {
+            const container = document.getElementById('swipeContainer');
+            if (!container) return;
+            const beforeDiv = document.getElementById('swipeBefore');
+            const line = document.getElementById('swipeLine');
+            let dragging = false;
+
+            function moveTo(x) {
+                const rect = container.getBoundingClientRect();
+                let pct = ((x - rect.left) / rect.width) * 100;
+                pct = Math.max(2, Math.min(98, pct));
+                beforeDiv.style.width = pct + '%';
+                line.style.left = pct + '%';
+                // Fix the before image width so it matches the container
+                const beforeImg = beforeDiv.querySelector('img');
+                beforeImg.style.width = rect.width + 'px';
+            }
+
+            line.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
+            container.addEventListener('mousedown', e => { dragging = true; moveTo(e.clientX); });
+            window.addEventListener('mousemove', e => { if (dragging) moveTo(e.clientX); });
+            window.addEventListener('mouseup', () => { dragging = false; });
+
+            // Touch support
+            line.addEventListener('touchstart', e => { dragging = true; e.preventDefault(); });
+            container.addEventListener('touchstart', e => { dragging = true; moveTo(e.touches[0].clientX); });
+            window.addEventListener('touchmove', e => { if (dragging) moveTo(e.touches[0].clientX); });
+            window.addEventListener('touchend', () => { dragging = false; });
+
+            // Fix before image width on resize
+            window.addEventListener('resize', () => {
+                const rect = container.getBoundingClientRect();
+                const beforeImg = beforeDiv.querySelector('img');
+                beforeImg.style.width = rect.width + 'px';
+            });
+            // Initial fix
+            window.addEventListener('load', () => {
+                const rect = container.getBoundingClientRect();
+                const beforeImg = beforeDiv.querySelector('img');
+                beforeImg.style.width = rect.width + 'px';
+            });
+        })();
+    </script>
 
 </body>
 </html>
