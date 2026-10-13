@@ -1,721 +1,799 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HS524M Test 2 Portfolio | Rahul Dewangan (CS25M114)</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Spatial analytics and urban informatics portfolio for HS524M. Question 1 interactive waste-bin web mapping and Question 2 Google Earth Engine urban analysis for Raipur using Dynamic World."
+    />
+    <title>Raipur Built-up Expansion & Waste-Bin Spatial Analysis | Rahul Dewangan (CS25M114)</title>
     <!-- Fonts & Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
     <style>
-        :root {
-            --primary: #1e3a8a;
-            --primary-light: #3b82f6;
-            --accent: #d97706;
-            --accent-green: #059669;
-            --accent-red: #dc2626;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #475569;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
-        }
+      :root {
+        color-scheme: dark;
+        --ink: #f6f3ec;
+        --muted: #bac3bf;
+        --bg: #0b1113;
+        --panel: #121b1e;
+        --panel-elevated: #162226;
+        --line: #2b393c;
+        --accent: #f2a65a;
+        --accent-2: #d94f36;
+        --accent-green: #2ecc71;
+        --max: 1240px;
+      }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 1rem;
+        line-height: 1.68;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 18% 0%, rgba(217, 79, 54, 0.16), transparent 38rem),
+          radial-gradient(circle at 85% 15%, rgba(242, 166, 90, 0.10), transparent 30rem),
+          var(--bg);
+      }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            line-height: 1.6;
-            scroll-behavior: smooth;
-        }
+      a {
+        color: #ffc985;
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      a:hover {
+        color: #ffe0b8;
+      }
+      img {
+        display: block;
+        max-width: 100%;
+      }
 
-        /* Navigation */
-        nav {
-            position: sticky;
-            top: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            z-index: 1000;
-            padding: 0.85rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+      .wrap {
+        width: min(calc(100% - 2.5rem), var(--max));
+        margin-inline: auto;
+      }
 
-        .nav-brand {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+      /* Sticky Topbar */
+      .topbar {
+        border-bottom: 1px solid var(--line);
+        background: rgba(11, 17, 19, 0.90);
+        backdrop-filter: blur(14px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .topbar .wrap {
+        min-height: 3.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .brand {
+        font-weight: 750;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--ink);
+      }
+      .brand i {
+        color: var(--accent);
+      }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.3rem;
+      }
+      nav a {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+      nav a:hover {
+        color: var(--ink);
+      }
 
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            list-style: none;
-        }
+      /* Hero Header */
+      header {
+        padding: 4.5rem 0 2.5rem;
+      }
+      .eyebrow {
+        margin: 0 0 0.8rem;
+        color: var(--accent);
+        font-weight: 750;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 0.82rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      h1, h2, h3 {
+        line-height: 1.15;
+        letter-spacing: -0.03em;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(2.3rem, 5.5vw, 4.2rem);
+        font-weight: 800;
+        max-width: 22ch;
+      }
+      .lead {
+        max-width: 74ch;
+        margin: 1.2rem 0 0;
+        color: var(--muted);
+        font-size: 1.12rem;
+      }
 
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-weight: 500;
-            font-size: 0.92rem;
-            transition: color 0.2s;
-        }
+      .author-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 1.2rem;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 0.55rem 1.2rem;
+        border-radius: 999px;
+        margin-top: 1.6rem;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+      .author-pill strong {
+        color: var(--ink);
+      }
 
-        .nav-links a:hover {
-            color: var(--primary-light);
-        }
+      /* Metric KPI Grid */
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+        margin: 2.2rem 0 0;
+      }
+      .metric {
+        min-height: 7.8rem;
+        padding: 1.2rem 1.4rem;
+        border: 1px solid var(--line);
+        border-radius: 1rem;
+        background: linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
+      }
+      .metric strong {
+        display: block;
+        font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+        color: var(--accent);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+      }
+      .metric span {
+        color: var(--muted);
+        font-size: 0.88rem;
+        display: block;
+        margin-top: 0.35rem;
+      }
 
-        /* Hero */
-        .hero {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-            color: #ffffff;
-            padding: 4.5rem 2rem 3.5rem;
-            text-align: center;
-        }
+      /* Sections */
+      section {
+        padding: 3.5rem 0;
+        border-top: 1px solid var(--line);
+      }
+      section h2 {
+        margin: 0 0 0.8rem;
+        font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+        font-weight: 750;
+      }
+      section p {
+        color: var(--muted);
+      }
+      .section-intro {
+        max-width: 76ch;
+        margin-bottom: 2rem;
+      }
 
-        .hero-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 0.35rem 1rem;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
+      /* Split Layout (Figure + Notes) */
+      .split {
+        display: grid;
+        grid-template-columns: minmax(0, 1.48fr) minmax(18rem, 0.52fr);
+        gap: 1.8rem;
+        align-items: start;
+      }
+      @media (max-width: 960px) {
+        .split {
+          grid-template-columns: 1fr;
         }
+      }
 
-        .hero h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 0.75rem;
-        }
+      .figure {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 1.1rem;
+        background: #050708;
+        box-shadow: 0 16px 36px rgba(0,0,0,0.35);
+      }
+      .figure img {
+        width: 100%;
+        height: auto;
+      }
+      figcaption {
+        padding: 0.85rem 1.1rem;
+        color: var(--muted);
+        font-size: 0.88rem;
+        border-top: 1px solid var(--line);
+        background: var(--panel);
+      }
 
-        .hero p {
-            font-size: 1.15rem;
-            color: #cbd5e1;
-            max-width: 780px;
-            margin: 0 auto 1.75rem;
-        }
+      /* Aside Notes */
+      .notes-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+      }
+      .note {
+        border-left: 3px solid var(--accent-2);
+        padding: 0.6rem 0 0.6rem 1.1rem;
+        color: var(--muted);
+        background: rgba(255,255,255,0.015);
+        border-radius: 0 0.8rem 0.8rem 0;
+        font-size: 0.95rem;
+      }
+      .note strong {
+        color: var(--ink);
+        display: block;
+        margin-bottom: 0.2rem;
+      }
 
-        .meta-tags {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            font-size: 0.95rem;
-            color: #94a3b8;
-        }
+      /* Map Container for Q1 */
+      .map-card {
+        border: 1px solid var(--line);
+        border-radius: 1.1rem;
+        overflow: hidden;
+        background: var(--panel);
+        margin: 1.5rem 0;
+        box-shadow: 0 16px 36px rgba(0,0,0,0.35);
+      }
+      .map-frame {
+        width: 100%;
+        height: 600px;
+        border: none;
+      }
 
-        .meta-tags span {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
+      /* Data Table */
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 0.9rem;
+        background: var(--panel);
+        margin: 1.8rem 0;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: 40rem;
+        font-size: 0.92rem;
+      }
+      th, td {
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid var(--line);
+        text-align: right;
+      }
+      th:first-child, td:first-child {
+        text-align: left;
+      }
+      th {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        background: rgba(255,255,255,0.02);
+      }
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      tbody tr:hover {
+        background: rgba(255,255,255,0.025);
+      }
 
-        .meta-tags strong {
-            color: #f8fafc;
-        }
+      /* Limitations Grid */
+      .limitations {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.2rem;
+        margin-top: 1.5rem;
+      }
+      .limitation {
+        padding: 1.3rem;
+        border: 1px solid var(--line);
+        border-radius: 0.9rem;
+        background: var(--panel);
+      }
+      .limitation h3 {
+        margin: 0 0 0.4rem;
+        font-size: 1.05rem;
+        color: var(--accent);
+      }
+      .limitation p {
+        margin: 0;
+        font-size: 0.92rem;
+        color: var(--muted);
+      }
 
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 3rem 1.5rem;
-        }
+      /* Buttons & Actions */
+      .btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--panel-elevated);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        padding: 0.7rem 1.25rem;
+        border-radius: 0.65rem;
+        font-size: 0.92rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .btn:hover {
+        background: var(--line);
+        color: #ffffff;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #0b1113;
+        border-color: var(--accent);
+      }
+      .btn-primary:hover {
+        background: #ffa85c;
+        color: #0b1113;
+      }
 
-        /* Cards & Sections */
-        .section-header {
-            margin-bottom: 2rem;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 0.75rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .section-header h2 {
-            font-size: 1.85rem;
-            font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-
-        .section-tag {
-            background: #e0e7ff;
-            color: var(--primary);
-            font-size: 0.8rem;
-            font-weight: 700;
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            margin-bottom: 2.5rem;
-        }
-
-        /* Narrative Story Layout: Question -> Method -> Output -> Results -> Discussion */
-        .story-step {
-            margin-bottom: 2rem;
-        }
-
-        .story-step h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .story-step h3 i {
-            color: var(--primary-light);
-        }
-
-        p {
-            margin-bottom: 1rem;
-            color: var(--text-muted);
-        }
-
-        /* Map Embed */
-        .map-container {
-            position: relative;
-            width: 100%;
-            height: 620px;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-lg);
-            margin: 1.5rem 0;
-        }
-
-        .map-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.25rem;
-            margin: 1.5rem 0;
-        }
-
-        .stat-card {
-            background: #f1f5f9;
-            border-radius: 10px;
-            padding: 1.25rem;
-            border-left: 4px solid var(--primary-light);
-        }
-
-        .stat-card.green { border-left-color: var(--accent-green); }
-        .stat-card.orange { border-left-color: var(--accent); }
-        .stat-card.red { border-left-color: var(--accent-red); }
-
-        .stat-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: #64748b;
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-value {
-            font-size: 1.75rem;
-            font-weight: 800;
-            color: var(--text-main);
-        }
-
-        .stat-sub {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
-
-        /* Image Display */
-        .visual-display {
-            text-align: center;
-            margin: 1.5rem 0;
-        }
-
-        .visual-display img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border);
-        }
-
-        .visual-caption {
-            font-size: 0.88rem;
-            color: #64748b;
-            margin-top: 0.6rem;
-            font-style: italic;
-        }
-
-        /* Data Tables */
-        .table-responsive {
-            overflow-x: auto;
-            margin: 1.5rem 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.92rem;
-            text-align: left;
-        }
-
-        th {
-            background: #f1f5f9;
-            color: #1e293b;
-            font-weight: 600;
-            padding: 0.75rem 1rem;
-            border-bottom: 2px solid var(--border);
-        }
-
-        td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-muted);
-        }
-
-        tr:hover {
-            background-color: #f8fafc;
-        }
-
-        /* Callout Box */
-        .callout {
-            background: #eff6ff;
-            border-left: 4px solid var(--primary-light);
-            padding: 1.25rem;
-            border-radius: 6px;
-            margin: 1.5rem 0;
-            font-size: 0.95rem;
-        }
-
-        .callout strong {
-            color: var(--primary);
-        }
-
-        /* Downloads & Buttons */
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--primary);
-            color: #ffffff;
-            padding: 0.7rem 1.4rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.92rem;
-            transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .btn:hover {
-            background: var(--primary-light);
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: #ffffff;
-            color: var(--text-main);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: #f1f5f9;
-            color: var(--primary);
-        }
-
-        /* Footer */
-        footer {
-            background: #0f172a;
-            color: #94a3b8;
-            padding: 3rem 2rem;
-            text-align: center;
-            font-size: 0.9rem;
-            border-top: 1px solid #1e293b;
-        }
-
-        footer a {
-            color: #38bdf8;
-            text-decoration: none;
-        }
-
-        /* Attribution Card */
-        .attribution-box {
-            background: #fafaf9;
-            border: 1px solid #e7e5e4;
-            border-radius: 8px;
-            padding: 1.25rem;
-            margin-top: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .attribution-box i {
-            font-size: 2rem;
-            color: #854d0e;
-        }
+      /* Footer */
+      footer {
+        padding: 4rem 0 3rem;
+        border-top: 1px solid var(--line);
+        background: #070b0d;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      footer .wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
 
-    <!-- Sticky Navigation -->
-    <nav>
-        <div class="nav-brand">
-            <i class="fa-solid fa-earth-asia"></i>
-            <span>HS524M Portfolio</span>
+    <!-- Sticky Navigation Topbar -->
+    <header class="topbar">
+      <div class="wrap">
+        <div class="brand">
+          <i class="fa-solid fa-cube"></i>
+          <span>HS524M Spatial Portfolio</span>
         </div>
-        <ul class="nav-links">
-            <li><a href="#overview">Overview</a></li>
-            <li><a href="#question1">Q1: Waste-Bin Web Map</a></li>
-            <li><a href="#question2">Q2: Raipur GEE Analysis</a></li>
-            <li><a href="#code">Notebooks & Data</a></li>
-            <li><a href="#limitations">Limitations</a></li>
-        </ul>
-    </nav>
-
-    <!-- Hero Header -->
-    <header class="hero" id="overview">
-        <div class="hero-badge">Urban Informatics & Spatial Analytics</div>
-        <h1>Geospatial Analytics & Web Mapping Portfolio</h1>
-        <p>Interactive web mapping of solid waste infrastructure and long-term satellite-based land cover dynamics (2018–2025) using Google Earth Engine & Dynamic World.</p>
-        
-        <div class="meta-tags">
-            <span><i class="fa-solid fa-user-graduate"></i> Student: <strong>Rahul Dewangan</strong></span>
-            <span><i class="fa-solid fa-id-card"></i> Roll Number: <strong>CS25M114</strong></span>
-            <span><i class="fa-solid fa-city"></i> Assigned City: <strong>Raipur (Chhattisgarh)</strong></span>
-        </div>
+        <nav>
+          <a href="#question1">Waste-Bin Web Map</a>
+          <a href="#question2">Raipur Urban Analysis</a>
+          <a href="#time-series">Annual Animation</a>
+          <a href="#table">Metrics Table</a>
+          <a href="#discussion">Spatial Discussion</a>
+          <a href="#sources">Methods &amp; Sources</a>
+        </nav>
+      </div>
     </header>
 
-    <main class="container">
+    <!-- Main Content Wrap -->
+    <main class="wrap">
 
-        <!-- =================================================================== -->
-        <!-- QUESTION 1: INTERACTIVE WEB MAPPING OF WASTE-BIN OBSERVATIONS -->
-        <!-- =================================================================== -->
-        <section id="question1">
-            <div class="section-header">
-                <h2><i class="fa-solid fa-trash-can"></i> Question 1: Interactive Web Mapping of Waste Bins</h2>
-                <span class="section-tag"><i class="fa-solid fa-layer-group"></i> QField &amp; Folium Web Mapping</span>
+      <!-- Hero Header -->
+      <header>
+        <div class="eyebrow">
+          <i class="fa-solid fa-satellite"></i> Urban Informatics &bull; Satellite Land Cover Dynamics
+        </div>
+        <h1>Raipur Built-up Surface &amp; Infrastructure Analysis</h1>
+        <p class="lead">
+          Google Earth Engine &amp; Dynamic World (10m) analysis of Raipur's urban expansion and tree canopy dynamics (2018–2025), coupled with interactive QField web mapping of campus solid-waste infrastructure.
+        </p>
+
+        <div class="author-pill">
+          <span><i class="fa-solid fa-user-graduate"></i> Student: <strong>Rahul Dewangan</strong></span>
+          <span><i class="fa-solid fa-id-card"></i> Roll No: <strong>CS25M114</strong></span>
+          <span><i class="fa-solid fa-location-dot"></i> Assigned City: <strong>Raipur (Chhattisgarh)</strong></span>
+        </div>
+
+        <!-- 4 KPI Metrics Grid -->
+        <div class="metrics">
+          <div class="metric">
+            <strong>69.42 km²</strong>
+            <span>2018 Built-up Baseline (39.98% of ULB)</span>
+          </div>
+          <div class="metric">
+            <strong>84.82 km²</strong>
+            <span>2025 Built-up Footprint (48.85% of ULB)</span>
+          </div>
+          <div class="metric">
+            <strong>+15.40 km²</strong>
+            <span>Net Built Expansion (+22.18% Growth)</span>
+          </div>
+          <div class="metric">
+            <strong>-4.23 km²</strong>
+            <span>Tree Canopy Contraction (-14.17% Net Change)</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ========================================================= -->
+      <!-- QUESTION 2: EXPANSION OF TOTAL BUILT-UP SURFACE IN RAIPUR -->
+      <!-- ========================================================= -->
+      <section id="question2">
+        <div class="eyebrow">Question 2 &bull; Google Earth Engine Analysis</div>
+        <h2>Where the surface expanded</h2>
+        <p class="section-intro">
+          Analysis of Raipur Municipal Corporation territory (173.64 km²) using Sentinel-2 L2A derived Dynamic World (10 m) land cover across an 8-year post-monsoon baseline.
+        </p>
+
+        <div class="split">
+          <!-- Triple Panel Map Figure -->
+          <div class="figure">
+            <img
+              src="assets/images/raipur_change_map.png"
+              alt="Expansion of total built-up surface in Raipur (2018 vs 2025)"
+              loading="lazy"
+            />
+            <figcaption>
+              Dynamic World Sentinel-2 derived near-real-time land cover at 10 m nominal resolution. Continuous built-up density within Raipur Municipal Corporation (ULB Code: 802034, 173.64 km²).
+            </figcaption>
+          </div>
+
+          <!-- Analytical Inset Notes -->
+          <div class="notes-stack">
+            <div class="note">
+              <strong>Coverage result.</strong>
+              Total built-up surface increased from 39.98% (69.42 km²) to 48.85% (84.82 km²) of the municipal territory between 2018 and 2025.
             </div>
-
-            <div class="card">
-                <!-- Story Step 1: Objective & Context -->
-                <div class="story-step">
-                    <h3><i class="fa-solid fa-circle-question"></i> 1. Problem Statement & Objectives</h3>
-                    <p>
-                        Using mobile spatial observations recorded via <strong>QField</strong>, develop an interactive <strong>Folium web map</strong> visualizing campus waste-bin infrastructure. 
-                        The map must display interactive point markers, color-code fill capacity, provide rich popup information with embedded photographs, identify the surveying student, provide layer and measurement controls, and remain accessible online.
-                    </p>
-                </div>
-
-                <!-- Story Step 2: Methodology -->
-                <div class="story-step">
-                    <h3><i class="fa-solid fa-gears"></i> 2. Methodology & Technical Workflow</h3>
-                    <p>
-                        The field survey was captured using QField and exported into an OGC GeoPackage (<code>notes.gpkg</code>). 
-                        Spatial point features from <code>notes_point</code> were merged with field photographic evidence in <code>notes_attachments</code> using the unique feature identifier (<code>uuid == note_uuid</code>). Coordinates were verified and projected to <code>EPSG:4326</code>.
-                    </p>
-                    <p>
-                        Each receptacle was classified into three operational status tiers:
-                    </p>
-                    <div class="stats-grid">
-                        <div class="stat-card green">
-                            <div class="stat-label">Low Fill (&lt; 30%)</div>
-                            <div class="stat-value">22 Bins</div>
-                            <div class="stat-sub">Normal operation; ample residual capacity</div>
-                        </div>
-                        <div class="stat-card orange">
-                            <div class="stat-label">Moderate (30% - 69%)</div>
-                            <div class="stat-value">20 Bins</div>
-                            <div class="stat-sub">Scheduled routine servicing</div>
-                        </div>
-                        <div class="stat-card red">
-                            <div class="stat-label">Critical (&ge; 70%)</div>
-                            <div class="stat-value">13 Bins</div>
-                            <div class="stat-sub">Urgent clearance required; high overflow risk</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Story Step 3: Interactive Map Display -->
-                <div class="story-step">
-                    <h3><i class="fa-solid fa-map-location-dot"></i> 3. Interactive Web Map Interface</h3>
-                    <p>
-                        Explore the interactive map below. Click on any waste bin marker to view its <strong>photo, fill capacity progress bar, timestamp, coordinates, and observer details</strong>. Use the <strong>Layer Control</strong> (top-right) to toggle individual fill categories, switch between OpenStreetMap and High-Resolution Satellite imagery, or activate marker clustering.
-                    </p>
-                    
-                    <div class="map-container">
-                        <iframe src="waste_bin_map.html" title="Interactive Waste Bin Folium Map"></iframe>
-                    </div>
-
-                    <div style="text-align: right; margin-top: 0.5rem;">
-                        <a href="waste_bin_map.html" target="_blank" class="btn btn-secondary">
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Map Fullscreen in New Tab
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Story Step 4: Spatial Findings & Attribution -->
-                <div class="story-step">
-                    <h3><i class="fa-solid fa-magnifying-glass-chart"></i> 4. Spatial Analysis & Insights</h3>
-                    <p>
-                        <strong>Spatial Clustering:</strong> Observations cluster heavily along primary circulation arteries connecting academic blocks, lecture halls, and residential hostels. Critical fill hotspots (&ge; 70%) are concentrated around dining halls, food courts, and transit corridors during peak afternoon hours.
-                    </p>
-                    <p>
-                        <strong>Logistical Implications:</strong> Peripheral walking trails feature mostly underfilled receptacles (&lt; 30%), indicating an opportunity for municipal spatial redistribution to balance waste load.
-                    </p>
-
-                    <!-- Student Attribution Box -->
-                    <div class="attribution-box">
-                        <i class="fa-solid fa-certificate"></i>
-                        <div>
-                            <strong>Primary Surveyor / Author:</strong> Rahul Dewangan (Roll No: <code>CS25M114</code>)<br>
-                            <span style="font-size: 0.88rem; color: #57534e;">
-                                <strong>Peer Collaboration & Acknowledgement:</strong> Data recorded in active collaboration with <strong>Raushan Vivek (Roll No: <code>CS25M115</code>)</strong>, whose field dataset was incorporated to ensure comprehensive spatial coverage across campus corridors.
-                            </span>
-                        </div>
-                    </div>
-                </div>
+            <div class="note">
+              <strong>Southeastern growth corridor.</strong>
+              The most prominent conversion corridor links Old Raipur with Atal Nagar (Naya Raipur) along VIP Road and the Raipur–Abhanpur highway, driving rapid conversion of agricultural and peri-urban land into residential gated communities and logistics hubs.
             </div>
-        </section>
-
-        <!-- =================================================================== -->
-        <!-- QUESTION 2: GEE URBAN ANALYSIS - RAIPUR (DYNAMIC WORLD 2018-2025) -->
-        <!-- =================================================================== -->
-        <section id="question2">
-            <div class="section-header">
-                <h2><i class="fa-solid fa-satellite"></i> Question 2: GEE Urban Analysis — Raipur (2018–2025)</h2>
-                <span class="section-tag"><i class="fa-solid fa-satellite-dish"></i> Google Earth Engine &amp; Dynamic World</span>
+            <div class="note">
+              <strong>Western industrial axis.</strong>
+              Substantial built densification concentrated along National Highway 53 (Great Eastern Road) through Tatibandh and Sarona toward Durg-Bhilai.
             </div>
+          </div>
+        </div>
+      </section>
 
-            <div class="card">
-                <!-- Story Step 1: Question -->
-                <div class="story-step">
-                    <h3><i class="fa-solid fa-bullseye"></i> 1. Assigned Analysis & City Scope</h3>
-                    <p>
-                        <strong>Allocation No. 32:</strong> Raipur Municipal Corporation (Chhattisgarh)<br>
-                        <strong>Assigned Indicator:</strong> Compare changes in <strong>Built Land</strong> and <strong>Tree Cover</strong> from <strong>2018 to 2025</strong>.<br>
-                        <strong>Dataset:</strong> Google Earth Engine Dynamic World (<code>GOOGLE/DYNAMICWORLD/V1</code>), 10 m near-real-time global land cover derived from Sentinel-2 L2A.<br>
-                        <strong>Boundary Source:</strong> Official Indian Urban Local Body boundaries (<code>ramSeraph/indian_admin_boundaries</code>, <code>SBM_ULBs</code> dataset, ULB Code: <code>802034</code> - Raipur Municipal Corporation, total territory: <strong>173.64 km²</strong>).
-                    </p>
-                </div>
+      <!-- ========================================================= -->
+      <!-- DYNAMIC TEMPORAL OUTPUT: EIGHT YEARS IN EIGHT FRAMES -->
+      <!-- ========================================================= -->
+      <section id="time-series">
+        <div class="eyebrow">Dynamic Temporal Output</div>
+        <h2>Eight years in eight frames</h2>
+        <p class="section-intro">
+          Annual evolution of built-up density across Raipur Municipal Corporation from 2018 through 2025, using a consistent post-monsoon (October 15 – December 15) observation window.
+        </p>
 
-                <!-- Story Step 2: Method -->
-                <div class="story-step">
-                    <h3><i class="fa-solid fa-network-wired"></i> 2. Methodology & Consistent Seasonal Window</h3>
-                    <p>
-                        To ensure rigorous inter-annual comparability and eliminate monsoon cloud artifacts (June–September) and dry-season vegetation shedding (April–May), a consistent <strong>Post-Monsoon / Early Winter window (October 15 to December 15)</strong> was established across all eight years (2018–2025).
-                    </p>
-                    <p>
-                        For each year:
-                        1. Sentinel-2 scenes in Dynamic World were clipped to the Raipur boundary.
-                        2. The annual <code>mode</code> composite of the discrete <code>label</code> band was generated.
-                        3. Built land was classified from pixels where <code>label == 6</code>; Tree cover was classified from pixels where <code>label == 1</code>.
-                        4. Surface areas were integrated using <code>ee.Image.pixelArea()</code> at 10 m resolution to obtain exact square kilometer totals.
-                    </p>
-                </div>
+        <div class="split">
+          <!-- Annual Animated GIF -->
+          <div class="figure">
+            <img
+              src="assets/images/raipur_dw_animation.gif"
+              alt="Annual progression of Raipur built-up surface (2018 to 2025)"
+              loading="lazy"
+            />
+            <figcaption>
+              Annual progression of built-up surface across Raipur Municipal Corporation (2018–2025). Dark-field composite with white municipal boundary and standardized density scale.
+            </figcaption>
+          </div>
 
-                <!-- Story Step 3: Dynamic Temporal Output -->
-                <div class="story-step">
-                    <h3><i class="fa-solid fa-film"></i> 3. Dynamic Temporal Output: Annual Growth Animation (2018–2025)</h3>
-                    <p>
-                        As required by the assignment guidelines, the dynamic temporal animation below illustrates the year-by-year spatial outward growth of built land (red) alongside the retreat and fragmentation of tree canopy (green) within the Raipur municipal boundary.
-                    </p>
-                    
-                    <div class="visual-display">
-                        <img src="assets/images/raipur_dw_animation.gif" alt="Raipur Dynamic World Annual Animation 2018-2025">
-                        <div class="visual-caption">
-                            <strong>Figure 1:</strong> Dynamic Annual Animation (2018–2025) showing progressive urban expansion and green space evolution across Raipur Municipal Corporation (Dynamic World 10m).
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Story Step 4: Thematic Change Map -->
-                <div class="story-step">
-                    <h3><i class="fa-solid fa-map"></i> 4. Thematic Land Cover Transition Map</h3>
-                    <p>
-                        Thematic spatial analysis delineates stable pre-2018 built-up land, newly converted urban built surfaces (2018–2025 expansion), stable tree canopy, and canopy loss zones:
-                    </p>
-                    
-                    <div class="visual-display">
-                        <img src="assets/images/raipur_change_map.png" alt="Raipur Thematic Change Map 2018-2025">
-                        <div class="visual-caption">
-                            <strong>Figure 2:</strong> Raipur Municipal Corporation Thematic Transition Map (2018 vs. 2025), showing core built land, radial urban expansion corridors, resilient institutional canopy, and fringe tree loss.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Story Step 5: Numerical Results -->
-                <div class="story-step">
-                    <h3><i class="fa-solid fa-chart-line"></i> 5. Numerical Summary Statistics & Trajectory</h3>
-                    <p>
-                        Quantitative analysis reveals pronounced urban growth coupled with modest tree canopy contraction over the 8-year span:
-                    </p>
-
-                    <div class="stats-grid">
-                        <div class="stat-card red">
-                            <div class="stat-label">Built Land Expansion</div>
-                            <div class="stat-value">+15.40 km²</div>
-                            <div class="stat-sub">Relative increase: <strong>+22.18%</strong> (from 69.42 to 84.82 km²)</div>
-                        </div>
-                        <div class="stat-card green">
-                            <div class="stat-label">Tree Canopy Contraction</div>
-                            <div class="stat-value">-4.23 km²</div>
-                            <div class="stat-sub">Relative change: <strong>-14.17%</strong> (from 29.85 to 25.62 km²)</div>
-                        </div>
-                        <div class="stat-card orange">
-                            <div class="stat-label">Built-to-Tree Ratio</div>
-                            <div class="stat-value">3.31 : 1</div>
-                            <div class="stat-sub">Shifted upwards from <strong>2.33 : 1</strong> in 2018</div>
-                        </div>
-                    </div>
-
-                    <div class="visual-display">
-                        <img src="assets/images/raipur_trends.png" alt="Raipur Built vs Tree Cover Trends Chart">
-                        <div class="visual-caption">
-                            <strong>Figure 3:</strong> Annual trajectory of Built Land vs. Tree Cover in Raipur (2018–2025), showing absolute area (left) and municipal area percentage share (right).
-                        </div>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Year</th>
-                                    <th>Built Area (km²)</th>
-                                    <th>Built Share (%)</th>
-                                    <th>Tree Area (km²)</th>
-                                    <th>Tree Share (%)</th>
-                                    <th>Built:Tree Ratio</th>
-                                    <th>Annual Net Change</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td><strong>2018</strong></td><td>69.42</td><td>39.98%</td><td>29.85</td><td>17.19%</td><td>2.33</td><td>Baseline</td></tr>
-                                <tr><td><strong>2019</strong></td><td>71.35</td><td>41.09%</td><td>29.10</td><td>16.76%</td><td>2.45</td><td>+1.93 km² built / -0.75 km² trees</td></tr>
-                                <tr><td><strong>2020</strong></td><td>73.80</td><td>42.50%</td><td>28.45</td><td>16.38%</td><td>2.59</td><td>+2.45 km² built / -0.65 km² trees</td></tr>
-                                <tr><td><strong>2021</strong></td><td>76.15</td><td>43.86%</td><td>27.60</td><td>15.90%</td><td>2.76</td><td>+2.35 km² built / -0.85 km² trees</td></tr>
-                                <tr><td><strong>2022</strong></td><td>78.90</td><td>45.44%</td><td>26.95</td><td>15.52%</td><td>2.93</td><td>+2.75 km² built / -0.65 km² trees</td></tr>
-                                <tr><td><strong>2023</strong></td><td>81.25</td><td>46.79%</td><td>26.30</td><td>15.15%</td><td>3.09</td><td>+2.35 km² built / -0.65 km² trees</td></tr>
-                                <tr><td><strong>2024</strong></td><td>83.10</td><td>47.86%</td><td>25.90</td><td>14.92%</td><td>3.21</td><td>+1.85 km² built / -0.40 km² trees</td></tr>
-                                <tr><td><strong>2025</strong></td><td>84.82</td><td>48.85%</td><td>25.62</td><td>14.75%</td><td>3.31</td><td>+1.72 km² built / -0.28 km² trees</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Story Step 6: In-Depth Discussion -->
-                <div class="story-step" id="discussion">
-                    <h3><i class="fa-solid fa-comments"></i> 6. Analytical Discussion & Scientific Interpretation</h3>
-                    <p>
-                        <strong>1. Macro-Spatial Expansion Corridors:</strong><br>
-                        Between 2018 and 2025, Raipur exhibited asymmetric spatial outward expansion. 
-                        The strongest expansion vector developed along the <strong>southeastern corridor toward Atal Nagar (Naya Raipur)</strong> via VIP Road and the Raipur–Abhanpur highway, converting former open scrub and agricultural margins into administrative, residential, and commercial developments.
-                        Simultaneously, densification took place along the <strong>western National Highway 53 (GE Road) axis</strong> through Tatibandh and Sarona toward Durg-Bhilai, and northwards along the industrial transport spine near Birgaon and Bhanpuri.
-                    </p>
-                    <p>
-                        <strong>2. Urban Tree Canopy Dynamics:</strong><br>
-                        Tree cover declined from <strong>17.19% to 14.75%</strong> of the municipal territory. 
-                        Canopy loss was concentrated in peri-urban conversion zones and infill redevelopments where trees were cleared for road widening and building footprints.
-                        However, tree canopy remained notably stable inside large institutional campuses (such as <strong>AIIMS Raipur, NIT Raipur, Pt. Ravishankar Shukla University, Raj Bhavan / Civil Lines</strong>) and around municipal lake rejuvenation zones (notably <strong>Telibandha Lake</strong>).
-                    </p>
-                </div>
-
-                <!-- Story Step 7: Critical Limitations -->
-                <div class="story-step" id="limitations">
-                    <h3><i class="fa-solid fa-triangle-exclamation"></i> 7. Dataset & Methodological Limitations</h3>
-                    <div class="callout">
-                        <strong>Important Sensor & Modeling Constraints:</strong>
-                        <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
-                            <li><strong>Spatial Resolution (10 meters):</strong> While Dynamic World at 10m is substantially finer than 30m Landsat or 100m GHSL products, small urban elements (individual street trees, narrow alleys, and small rooftop gardens) fall below the 100 m² pixel size, leading to mixed-pixel blending.</li>
-                            <li><strong>Seasonal Phenology & Cloud Masking:</strong> Central India experiences extreme seasonal drying in pre-monsoon summer (April–May) and dense monsoonal cloud obscuration (June–September). Utilizing a consistent post-monsoon window (October 15 – December 15) successfully mitigated cloud gaps and phenological drying, but reflects only one seasonal snapshot per year.</li>
-                            <li><strong>Deep Learning Class Ambiguity:</strong> Dynamic World utilizes a convolutional neural network (CNN) predicting multi-class probabilities. Early-stage construction sites with excavated foundations and exposed soil can occasionally exhibit spectral confusion between bare soil and impervious built surface, which mode compositing helped resolve.</li>
-                        </ul>
-                    </div>
-                </div>
+          <!-- Analytical Inset Notes -->
+          <div class="notes-stack">
+            <div class="note">
+              <strong>Temporal progression.</strong>
+              Built-up surface expanded consistently in every consecutive annual interval, rising from 69.42 km² in 2018 to 84.82 km² in 2025.
             </div>
-        </section>
-
-        <!-- =================================================================== -->
-        <!-- DOWNLOADS & CODE ARTIFACTS -->
-        <!-- =================================================================== -->
-        <section id="code">
-            <div class="section-header">
-                <h2><i class="fa-solid fa-code"></i> Code, Notebooks & Submission Artifacts</h2>
-                <span class="section-tag">Reproducible Science</span>
+            <div class="note">
+              <strong>Tree canopy dynamics.</strong>
+              Tree cover contracted from 29.85 km² (17.19%) to 25.62 km² (14.75%). Tree loss was concentrated along road-widening corridors and edge subdivisions, while mature canopies inside AIIMS, NIT, Raj Bhavan / Civil Lines, and the Telibandha Lake precinct remained highly resilient.
             </div>
-
-            <div class="card">
-                <p>All analysis code and notebooks used to generate the outputs above are documented, structured, and available for download:</p>
-                
-                <div class="btn-group">
-                    <a href="Question1_WasteBin_Folium_CS25M114.ipynb" class="btn" download>
-                        <i class="fa-solid fa-file-code"></i> Download Q1 Notebook (.ipynb)
-                    </a>
-                    <a href="Question2_Raipur_DynamicWorld_CS25M114.ipynb" class="btn" download>
-                        <i class="fa-solid fa-file-code"></i> Download Q2 Notebook (.ipynb)
-                    </a>
-                    <a href="waste_bin_map.html" class="btn btn-secondary" download>
-                        <i class="fa-solid fa-globe"></i> Download Q1 Web Map (.html)
-                    </a>
-                    <a href="raipur_dynamic_world_stats.csv" class="btn btn-secondary" download>
-                        <i class="fa-solid fa-table"></i> Download Raipur Stats (.csv)
-                    </a>
-                </div>
+            <div class="note">
+              <strong>Built-to-tree ratio.</strong>
+              The ratio of built-up land to tree canopy shifted upwards from 2.33 : 1 in 2018 to 3.31 : 1 in 2025 (+42.1% relative increase in urban dominance).
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- NUMERICAL SUMMARY METRICS TABLE & CHART -->
+      <!-- ========================================================= -->
+      <section id="table">
+        <div class="eyebrow">Quantitative Trajectory</div>
+        <h2>Measured change across Dynamic World epochs</h2>
+        <p class="section-intro">
+          Annual area calculations integrated using <code>ee.Image.pixelArea()</code> at 10 m resolution across Raipur's 173.64 km² administrative territory.
+        </p>
+
+        <div class="figure" style="margin-bottom: 2rem;">
+          <img
+            src="assets/images/raipur_trends.png"
+            alt="Raipur built-up and tree cover trajectory chart"
+            loading="lazy"
+          />
+          <figcaption>
+            Annual trajectories and proportion shares of Built Land vs. Tree Cover in Raipur Municipal Corporation (2018–2025).
+          </figcaption>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Built Area (km²)</th>
+                <th>Built Share (%)</th>
+                <th>Tree Cover (km²)</th>
+                <th>Tree Share (%)</th>
+                <th>Built : Tree Ratio</th>
+                <th>Annual Change</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>2018</strong></td>
+                <td>69.42</td>
+                <td>39.98%</td>
+                <td>29.85</td>
+                <td>17.19%</td>
+                <td>2.33</td>
+                <td>Baseline epoch</td>
+              </tr>
+              <tr>
+                <td><strong>2019</strong></td>
+                <td>71.35</td>
+                <td>41.09%</td>
+                <td>29.10</td>
+                <td>16.76%</td>
+                <td>2.45</td>
+                <td>+1.93 km² built / -0.75 km² trees</td>
+              </tr>
+              <tr>
+                <td><strong>2020</strong></td>
+                <td>73.80</td>
+                <td>42.50%</td>
+                <td>28.45</td>
+                <td>16.38%</td>
+                <td>2.59</td>
+                <td>+2.45 km² built / -0.65 km² trees</td>
+              </tr>
+              <tr>
+                <td><strong>2021</strong></td>
+                <td>76.15</td>
+                <td>43.86%</td>
+                <td>27.60</td>
+                <td>15.90%</td>
+                <td>2.76</td>
+                <td>+2.35 km² built / -0.85 km² trees</td>
+              </tr>
+              <tr>
+                <td><strong>2022</strong></td>
+                <td>78.90</td>
+                <td>45.44%</td>
+                <td>26.95</td>
+                <td>15.52%</td>
+                <td>2.93</td>
+                <td>+2.75 km² built / -0.65 km² trees</td>
+              </tr>
+              <tr>
+                <td><strong>2023</strong></td>
+                <td>81.25</td>
+                <td>46.79%</td>
+                <td>26.30</td>
+                <td>15.15%</td>
+                <td>3.09</td>
+                <td>+2.35 km² built / -0.65 km² trees</td>
+              </tr>
+              <tr>
+                <td><strong>2024</strong></td>
+                <td>83.10</td>
+                <td>47.86%</td>
+                <td>25.90</td>
+                <td>14.92%</td>
+                <td>3.21</td>
+                <td>+1.85 km² built / -0.40 km² trees</td>
+              </tr>
+              <tr>
+                <td><strong>2025</strong></td>
+                <td>84.82</td>
+                <td>48.85%</td>
+                <td>25.62</td>
+                <td>14.75%</td>
+                <td>3.31</td>
+                <td>+1.72 km² built / -0.28 km² trees</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- QUESTION 1: INTERACTIVE WEB MAPPING OF WASTE BINS -->
+      <!-- ========================================================= -->
+      <section id="question1">
+        <div class="eyebrow">Question 1 &bull; Mobile Spatial Survey</div>
+        <h2>Interactive Web Mapping of Waste-Bin Observations</h2>
+        <p class="section-intro">
+          Spatial distribution, fill-level classification, and photographic verification of campus solid waste receptacles collected via QField and visualized interactively with Folium.
+        </p>
+
+        <!-- Interactive Map Container -->
+        <div class="map-card">
+          <iframe
+            src="waste_bin_map.html"
+            class="map-frame"
+            title="Interactive Folium Waste Bin Map"
+          ></iframe>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 2rem;">
+          <a href="waste_bin_map.html" target="_blank" class="btn">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Map Fullscreen
+          </a>
+        </div>
+
+        <div class="split">
+          <div class="notes-stack">
+            <div class="note">
+              <strong>Spatial clustering &amp; high-traffic corridors.</strong>
+              Observations cluster heavily along primary circulation arteries connecting academic blocks, lecture complexes, and student residential halls. Receptacles near dining centers exhibited the highest fill levels (≥ 70%).
+            </div>
+            <div class="note">
+              <strong>Reallocation opportunities.</strong>
+              Peripheral transit paths featured predominantly underfilled containers (&lt; 30%), highlighting opportunities for spatial redistribution to optimize municipal collection routes.
+            </div>
+          </div>
+
+          <div class="note" style="border-left-color: var(--accent);">
+            <strong>Field Survey Attribution:</strong>
+            Survey conducted by <strong>Rahul Dewangan (CS25M114)</strong>.<br />
+            Peer dataset incorporated from <strong>Raushan Vivek (CS25M115)</strong> to extend spatial coverage across campus corridors.
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- SPATIAL PATTERN & INTERPRETATION -->
+      <!-- ========================================================= -->
+      <section id="discussion">
+        <div class="eyebrow">Spatial Interpretation</div>
+        <h2>Spatial pattern and interpretation</h2>
+        <p class="section-intro">
+          Urban morphology and environmental trade-offs during Raipur's transition from regional center to administrative and economic capital.
+        </p>
+
+        <div class="notes-stack" style="max-width: 82ch;">
+          <div class="note">
+            <strong>Asymmetric Growth Vectors:</strong>
+            Unlike concentric cities, Raipur's outward physical footprint has been heavily guided by planned infrastructure corridors. The master-planned connection to Atal Nagar (Naya Raipur) in the southeast acts as the dominant magnet for private gated developments, educational campuses, and commercial complexes.
+          </div>
+          <div class="note">
+            <strong>Industrial Infill &amp; Northern Sprawl:</strong>
+            To the north, the boundary adjoining Birgaon and Bhanpuri witnessed extensive transformation of scrubland into heavy transport hubs, iron/steel processing yards, and storage warehouses.
+          </div>
+          <div class="note">
+            <strong>Institutional Green Anchors:</strong>
+            While open peri-urban land was consumed rapidly, Raipur's core urban canopy was sheltered by large institutional green anchors (AIIMS, NIT, Raj Bhavan, Pt. Ravishankar Shukla University) and water preservation precincts around Telibandha Lake and Budha Talab.
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- METHODS, SOURCES & LIMITATIONS -->
+      <!-- ========================================================= -->
+      <section id="sources">
+        <div class="eyebrow">Methodology &amp; Critical Appraisal</div>
+        <h2>Method, sources and limitations</h2>
+        <p class="section-intro">
+          Data lineage, cloud-masking protocol, and technical constraints governing Sentinel-2 and Dynamic World.
+        </p>
+
+        <div class="limitations">
+          <div class="limitation">
+            <h3>Boundary Lineage</h3>
+            <p>
+              City boundary derived from official Indian Urban Local Body boundaries (<code>ramSeraph/indian_admin_boundaries</code>, <code>SBM_ULBs</code> dataset, ULB Code: <code>802034</code>, total area 173.64 km²).
+            </p>
+          </div>
+          <div class="limitation">
+            <h3>Seasonal Window Protocol</h3>
+            <p>
+              To eliminate cloud obscuration from the Indian summer monsoon (June–September) and avoid pre-monsoon deciduous leaf-off drying (April–May), a consistent <strong>October 15 – December 15</strong> post-monsoon window was applied across all eight years.
+            </p>
+          </div>
+          <div class="limitation">
+            <h3>10 m Spatial Resolution</h3>
+            <p>
+              While 10 m is substantially finer than 30 m Landsat, small urban elements like individual street trees or small rooftop patches fall below the 100 m² pixel footprint, resulting in mixed-pixel spectral blending.
+            </p>
+          </div>
+          <div class="limitation">
+            <h3>Deep Learning Class Ambiguity</h3>
+            <p>
+              Dynamic World employs a deep CNN predicting multi-class probabilities. Early-stage construction excavations produce bare earth that can exhibit transient confusion with natural bare soil before structural surfaces emerge.
+            </p>
+          </div>
+        </div>
+
+        <!-- Downloads & Artifacts -->
+        <div class="btn-row">
+          <a
+            href="Question1_WasteBin_Folium_CS25M114.ipynb"
+            class="btn btn-primary"
+            download
+          >
+            <i class="fa-solid fa-download"></i> Download Q1 Notebook (.ipynb)
+          </a>
+          <a
+            href="Question2_Raipur_DynamicWorld_CS25M114.ipynb"
+            class="btn btn-primary"
+            download
+          >
+            <i class="fa-solid fa-download"></i> Download Q2 Notebook (.ipynb)
+          </a>
+          <a
+            href="waste_bin_map.html"
+            class="btn"
+            download
+          >
+            <i class="fa-solid fa-globe"></i> Download Web Map (.html)
+          </a>
+          <a
+            href="raipur_dynamic_world_stats.csv"
+            class="btn"
+            download
+          >
+            <i class="fa-solid fa-table"></i> Download Statistics (.csv)
+          </a>
+        </div>
+      </section>
 
     </main>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 <strong>Rahul Dewangan</strong> (Roll No: <code>CS25M114</code>) &bull; HS524M Urban Informatics and Spatial Analytics</p>
-        <p style="margin-top: 0.5rem; font-size: 0.82rem;">
-            Built with Folium, GeoPandas, Google Earth Engine & Dynamic World &bull; Hosted on GitHub Pages
-        </p>
+      <div class="wrap">
+        <div>
+          <strong>Rahul Dewangan</strong> &bull; Roll No: <code>CS25M114</code> &bull; HS524M Urban Informatics and Spatial Analytics
+        </div>
+        <div>
+          Hosted on GitHub Pages &bull; Built with Folium, GeoPandas &amp; Google Earth Engine
+        </div>
+      </div>
     </footer>
 
-</body>
+  </body>
 </html>
