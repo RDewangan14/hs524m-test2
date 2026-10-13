@@ -815,6 +815,9 @@
         // Preload frames
         yrs.forEach(yr => { const i = new Image(); i.src = 'assets/images/raipur_frame_' + yr + '.png'; });
 
+        // Autoplay on page load
+        window.addEventListener('load', () => { togglePlay(); });
+
         // ===== SWIPE COMPARISON =====
         (function() {
             const container = document.getElementById('swipeContainer');
